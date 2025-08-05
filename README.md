@@ -13,6 +13,10 @@ Es gibt insgesamt 4 Mikrocontroller.
 - 1 Mikrocontroller ist dafür da, auf gruppe2/api eine JSON zu publishen, dass die richtigen Kommandos für die led besitzt. Es besitzt ein Dictionary aus Kommando -> json. Später ist das
     die Hauptsteuereinheit, welches das Kommando der IMU liest und dann abhängig davon die richtige JSON an die LED matrix schickt.
 
+
+### Links
+
+[WLED json-api](https://kno.wled.ge/interfaces/json-api/#setting-new-values)
 ### Meilensteine
 
 - Zuerst die lichter ansprechen
