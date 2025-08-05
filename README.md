@@ -23,3 +23,20 @@ Es gibt insgesamt 4 Mikrocontroller.
 - Dann mit der IMU Bewegungen erkennen
 - Beides verknüpfen
 - Alles von einem Roboterarm machen lassen
+
+### JSON
+## Fragmente
+{
+  "on": true,
+  "bri": 128,
+  "seg": [
+    {
+      "fx": 183,
+      "sx": 128,
+      "ix": 128,
+      "col": [[255, 0, 0]]
+    }
+  ]
+}
+
+Notiz: bri brightness, fx id effect, sx speed, ix intensity, col primary color
