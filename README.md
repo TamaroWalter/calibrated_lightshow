@@ -26,6 +26,7 @@ Es gibt insgesamt 4 Mikrocontroller.
 
 ### JSON
 ## Fragmente
+```
 {
   "on": true,
   "bri": 128,
@@ -38,5 +39,5 @@ Es gibt insgesamt 4 Mikrocontroller.
     }
   ]
 }
-
+```
 Notiz: bri brightness, fx id effect, sx speed, ix intensity, col primary color
