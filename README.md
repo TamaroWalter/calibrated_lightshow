@@ -26,7 +26,7 @@ Es gibt insgesamt 4 Mikrocontroller.
 - Alles von einem Roboterarm machen lassen
 
 ### JSON
-## Fragmente
+#### Fragmente
 ```
 {
   "bri": 128,
@@ -41,3 +41,14 @@ Es gibt insgesamt 4 Mikrocontroller.
 }
 ```
 Notiz: bri brightness, fx id effect, sx speed, ix intensity, col primary color
+
+#### Kommandos für licht
+
+| Bewegung   | Kommando |
+| ------------- | ------------- |
+| Lage - horizontal  | lh  |
+| Lage - vertikal gerade  | lvg  |
+| Lage - vertikal hoch  | lvh  |
+| Bewegung - Horizontal  |  bh |
+| Bewegung - vertikal gerade  | bvg |
+| Bewegung - vertikal hoch  | bvh | 
