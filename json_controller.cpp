@@ -1,8 +1,9 @@
 #include <ArduinoJson.h>
-#include "json_generator.h"
+#include "json_controller.h"
 
 /**
  * Function to build the Json that controls the lights from the led-matrix.
+ * - primary color is required, other colors are optional.
  */
 char* buildJson(int effectid, int brightness, int* c1, int* c2, int* c3) {
   static char jsonBuffer[256];
