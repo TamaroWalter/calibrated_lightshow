@@ -44,11 +44,11 @@ Notiz: bri brightness, fx id effect, sx speed, ix intensity, col primary color
 
 #### Kommandos für licht
 
-| Bewegung   | Kommando |
+| Bewegung   | Kommando-ID | 
 | ------------- | ------------- |
-| Lage - horizontal  | lh  |
-| Lage - vertikal gerade  | lvg  |
-| Lage - vertikal hoch  | lvh  |
-| Bewegung - Horizontal  |  bh |
-| Bewegung - vertikal gerade  | bvg |
-| Bewegung - vertikal hoch  | bvh | 
+| Lage - horizontal  | 1  |
+| Lage - vertikal gerade  | 2  |
+| Lage - vertikal hoch  | 3  |
+| Bewegung - Horizontal  |  4 |
+| Bewegung - vertikal gerade  | 5 |
+| Bewegung - vertikal hoch  | 6 | 
