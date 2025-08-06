@@ -115,19 +115,13 @@ void loop() {
     if (rob_status == 1){
       //++value;
     }
-    if (test == false) {
-      int color1[3] = {50, 168, 82};
-      char* effect = buildJson(0, color1);
-//      char* effect = buildJson(0, {50, 168, 82});
-      test = true;
-    } else {
-      int color1[3] = {168, 66, 50};
-      char* effect = buildJson(0, color1);
-      test = false;
-    }
-    //snprintf (msg, 256, "cnt #%ld", value);
-    Serial.print("Publish message: ");
-    Serial.println(msg);
+    int color1[3] = {252,3,231};  // Declare first
+    int brightness = 50;
+
+    char* effect = buildJson(0, brightness, color1, nullptr, nullptr);
+    Serial.println("Generated JSON:");
+    Serial.println(effect);
+
     client.publish("gruppe2/api", effect);
   }
 }
