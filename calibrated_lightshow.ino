@@ -20,16 +20,29 @@ const char* mqtt_server = "agiot.reparts.org";
 WiFiClient mqtt_node;
 PubSubClient client(mqtt_node);
 long lastUpdate = 0;
+int command = -1;
 const int ledPin = 2;
 
 void setup_wifi() {
   delay(10);
   // We start by connecting to a WiFi network
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
   WiFi.begin(ssid, password);
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
+    Serial.print(".");
   }
+
   randomSeed(micros());
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
 }
 
 /**
@@ -39,7 +52,17 @@ void setup_wifi() {
  * @param length - the length of the callback
  */
 void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.println("] ");
 
+  // Safely convert payload to a printable C string
+  char msg[length + 1]; // +1 for null terminator
+  memcpy(msg, payload, length);
+  msg[length] = '\0'; // Null-terminate
+  command = atoi(msg);
+  Serial.print("Received commando:");
+  Serial.println(command); // This prints properly with newline
 }
 
 void reconnect() {
@@ -49,7 +72,7 @@ void reconnect() {
     clientId += String(random(0xffff), HEX);
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
-      client.subscribe("gruppe2/api");
+      client.subscribe("gruppe2/kommando");
     } else {
       // Wait 5 seconds before retrying
       delay(5000);
@@ -73,11 +96,12 @@ void loop() {
   client.loop();
 
   long now = millis();
-  if (now - lastUpdate > 10000) {
+  // Update at 100hz.
+  if (now - lastUpdate > 10) {
     lastUpdate = now;
-    int brightness = 255;
-    int color[3] = {255, 0, 0};
-    char* effect = buildJson(0, brightness, color, nullptr, nullptr)
+    //int brightness = 255;
+    //int color[3] = {255, 0, 0};
+    char* effect = buildEffect(command);
     client.publish("gruppe2/api", effect);
   }
 }

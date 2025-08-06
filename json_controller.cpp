@@ -9,19 +9,25 @@ char* buildEffect(int command) {
   switch (command) {
     case 1:
       // Case: Lage horizontal.
+      return buildJson(0, 255, (int[3]){252, 181, 3}, nullptr, nullptr);
     case 2:
       // Case: Lage vertikal gerade.
+      return buildJson(0, 255, (int[3]){0, 0, 255}, nullptr, nullptr);
     case 3:
-      // Case: Lage vertikal hoch. 
+      // Case: Lage vertikal hoch.
+      return buildJson(0, 255, (int[3]){3, 252, 69}, nullptr, nullptr);
     case 4:
       // Case: Bewegung horizontal.
+      return buildJson(0, 255, (int[3]){235, 3, 252}, nullptr, nullptr);
     case 5:
       // Case: Bewegung vertikal gerade.
+      return buildJson(0, 255, (int[3]){252, 235, 3}, nullptr, nullptr);
     case 6:
       // Case: Bewegung vertikal hoch.
+      return buildJson(0, 255, (int[3]){255, 0, 0}, nullptr, nullptr);
     default:
       // Dunkel ab wenn nichts bekannt ist.
-      return buildJson(0, 0, (int[3]){255, 0, 0}, nullptr, nullptr)
+      return buildJson(0, 0, (int[3]){255, 0, 0}, nullptr, nullptr);
   }
 }
 
