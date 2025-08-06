@@ -2,6 +2,7 @@
 
 ### Ziele
 
+Übersetzung von Bewegung in Licht.
 Bewegungen mithilfe einer IMU erkennen und mit Licht zu visualisieren
 
 ### Aufbau
@@ -28,7 +29,6 @@ Es gibt insgesamt 4 Mikrocontroller.
 ## Fragmente
 ```
 {
-  "on": true,
   "bri": 128,
   "seg": [
     {
