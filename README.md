@@ -2,6 +2,7 @@
 
 ### Ziele
 
+Übersetzung von Bewegung in Licht.
 Bewegungen mithilfe einer IMU erkennen und mit Licht zu visualisieren
 
 ### Aufbau
