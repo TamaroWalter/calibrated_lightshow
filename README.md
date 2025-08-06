@@ -29,7 +29,6 @@ Es gibt insgesamt 4 Mikrocontroller.
 ## Fragmente
 ```
 {
-  "on": true,
   "bri": 128,
   "seg": [
     {
