@@ -9,7 +9,7 @@ char* buildEffect(int command) {
   switch (command) {
     case 1:
       // Case: Lage horizontal.
-      return buildJson(0, 255, (int[3]){252, 181, 3}, nullptr, nullptr);
+      return buildJson(38, 255, (int[3]){252, 181, 3}, (int[3]){0, 255, 0}, (int[3]){0, 0, 255});
     case 2:
       // Case: Lage vertikal gerade.
       return buildJson(0, 255, (int[3]){0, 0, 255}, nullptr, nullptr);

@@ -20,29 +20,20 @@ const char* mqtt_server = "agiot.reparts.org";
 WiFiClient mqtt_node;
 PubSubClient client(mqtt_node);
 long lastUpdate = 0;
+bool commandChanged = false;
 int command = -1;
+bool brightnessChanged = false;
+int brightness = -1;
 const int ledPin = 2;
 
 void setup_wifi() {
   delay(10);
-  // We start by connecting to a WiFi network
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-
   WiFi.begin(ssid, password);
-
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-
   randomSeed(micros());
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
 }
 
 /**
@@ -60,6 +51,14 @@ void callback(char* topic, byte* payload, unsigned int length) {
   char msg[length + 1]; // +1 for null terminator
   memcpy(msg, payload, length);
   msg[length] = '\0'; // Null-terminate
+
+  int tempCommand = atoi(msg);
+  if (command != tempCommand) {
+    command = tempCommand;
+    commandChanged = true;
+  } else {
+    commandChanged = false;
+  }
   command = atoi(msg);
   Serial.print("Received commando:");
   Serial.println(command); // This prints properly with newline
@@ -97,11 +96,13 @@ void loop() {
 
   long now = millis();
   // Update at 100hz.
-  if (now - lastUpdate > 10) {
+  if (now - lastUpdate > 100) {
     lastUpdate = now;
     //int brightness = 255;
     //int color[3] = {255, 0, 0};
-    char* effect = buildEffect(command);
-    client.publish("gruppe2/api", effect);
+    if (commandChanged || brightnessChanged) {
+      char* effect = buildEffect(command);
+      client.publish("gruppe2/api", effect);
+    }
   }
 }
