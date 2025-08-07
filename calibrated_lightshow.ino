@@ -3,6 +3,7 @@
 */
 
 #include <WiFi.h>
+#define MQTT_MAX_PACKET_SIZE 1024
 #include <PubSubClient.h>
 #include "json_controller.h"
 // Update these with values suitable for your network.
@@ -43,10 +44,6 @@ void setup_wifi() {
  * @param length - the length of the callback
  */
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.println("] ");
-
   // Safely convert payload to a printable C string
   char msg[length + 1]; // +1 for null terminator
   memcpy(msg, payload, length);
@@ -59,9 +56,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   } else {
     commandChanged = false;
   }
-  command = atoi(msg);
-  Serial.print("Received commando:");
-  Serial.println(command); // This prints properly with newline
 }
 
 void reconnect() {
@@ -102,7 +96,23 @@ void loop() {
     //int color[3] = {255, 0, 0};
     if (commandChanged || brightnessChanged) {
       char* effect = buildEffect(command);
+      // Add these debug lines:
+      Serial.println();
+      Serial.print("MQTT_MAX_PACKET_SIZE: ");
+      Serial.println(MQTT_MAX_PACKET_SIZE);
+      Serial.print("Command: ");
+      Serial.println(command);
+      Serial.print("JSON length: ");
+      Serial.println(strlen(effect));
+      Serial.print("JSON content: ");
+      Serial.println(effect);
+      Serial.println();
       client.publish("gruppe2/api", effect);
+      bool result = client.publish("gruppe2/api", effect);
+      Serial.print("Publish result: ");
+      Serial.println(result ? "SUCCESS" : "FAILED");
+      commandChanged = false;
+      brightnessChanged = false;
     }
   }
 }
