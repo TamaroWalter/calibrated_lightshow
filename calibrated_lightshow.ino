@@ -3,7 +3,7 @@
 */
 
 #include <WiFi.h>
-#define MQTT_MAX_PACKET_SIZE 1024
+#define MQTT_MAX_PACKET_SIZE 4096
 #include <PubSubClient.h>
 #include "json_controller.h"
 // Update these with values suitable for your network.
@@ -92,27 +92,19 @@ void loop() {
   // Update at 100hz.
   if (now - lastUpdate > 100) {
     lastUpdate = now;
-    //int brightness = 255;
-    //int color[3] = {255, 0, 0};
-    if (commandChanged || brightnessChanged) {
+    if (commandChanged) {
+      // First, reset the segment completely
       char* effect = buildEffect(command);
       // Add these debug lines:
       Serial.println();
-      Serial.print("MQTT_MAX_PACKET_SIZE: ");
-      Serial.println(MQTT_MAX_PACKET_SIZE);
       Serial.print("Command: ");
       Serial.println(command);
       Serial.print("JSON length: ");
       Serial.println(strlen(effect));
       Serial.print("JSON content: ");
       Serial.println(effect);
-      Serial.println();
       client.publish("gruppe2/api", effect);
-      bool result = client.publish("gruppe2/api", effect);
-      Serial.print("Publish result: ");
-      Serial.println(result ? "SUCCESS" : "FAILED");
       commandChanged = false;
-      brightnessChanged = false;
     }
   }
 }
