@@ -87,7 +87,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   gxnz = (abs(gxrad) >= (2 * PI / 6) && abs(gxrad) <= (4 * PI / 6));
   gynz = (abs(gyrad) >= (2 * PI / 6) && abs(gyrad) <= (4 * PI / 6));
   //do something after each delivery of new values
-  if (vges < 0.01){
+  //if (vges < 0.015){
     if(gxnull && gynull){
       lightid = 1;
     } else if (gxnull && gynz){
@@ -96,11 +96,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
       lightid = 2;
     }
     else lightid = 0;
-  } else if ((abs(vzw) > 0.018) && (abs(vzw) > vxyw)){
-    lightid = 5;
-  } else if ((vxyw > 0.022) && (abs(vzw) < vxyw)){
-    lightid = 4;
-  } else lightid = 0;
+  //} else if ((abs(vzw) > 0.016) && (abs(vzw) > vxyw)){
+    //lightid = 5;
+  //} else if ((vxyw > 0.02) && (abs(vzw) < vxyw)){
+    //lightid = 4;
+  //} else lightid = 0;
 
   //buffer IDs and count how many there are
   if (counter >= 30){counter = 0;}
@@ -114,11 +114,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }
   }
   for (int i = 0; i <= 5; i++) {Serial.print(i);Serial.print(": ");Serial.print(counts[i]);}Serial.println();
-  if (counts[5] > 7){lightidstable = 5;}
-  else if (counts[4] > 9){lightidstable = 4;}
-  else if (counts[3] > 14){lightidstable = 3;}
-  else if (counts[2] > 14){lightidstable = 2;}
-  else if (counts[1] > 14){lightidstable = 1;}
+  //if (counts[5] > 7){lightidstable = 5;}
+  //else if (counts[4] > 9){lightidstable = 4;}
+  if (counts[3] > 2){lightidstable = 3;}
+  else if (counts[2] > 2){lightidstable = 2;}
+  else if (counts[1] > 2){lightidstable = 1;}
   else lightidstable = 0;
   counter += 1;
 
@@ -178,22 +178,13 @@ void loop() {
 
   long now = millis();
   // Update at 100hz.
-  if (now - lastUpdate > 60) {
+  if (now - lastUpdate > 10) {
     lastUpdate = now;
     if (commandChanged) {
       // Then send the effect.
       char* effect = buildEffect(command);
       client.publish("gruppe2/api", effect);
       commandChanged = false;
-
-      // Add these debug lines:
-      Serial.println();
-      Serial.print("Command: ");
-      Serial.println(command);
-      Serial.print("JSON length: ");
-      Serial.println(strlen(effect));
-      Serial.print("JSON content: ");
-      Serial.println(effect);
     }
   }
 }
