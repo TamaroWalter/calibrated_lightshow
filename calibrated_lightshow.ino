@@ -22,7 +22,7 @@ int lightidstable;
 bool gxnull, gynull, gxnz, gynz;
 int counter = 0;
 int idhistory[30] = {0};
-int counts[6] = {0};
+//int counts[6] = {0};
 long lastUpdate = 0;
 bool commandChanged = false;
 int command = -1;
@@ -88,28 +88,24 @@ void callback(char* topic, byte* payload, unsigned int length) {
   gynz = (abs(gyrad) >= (2 * PI / 6) && abs(gyrad) <= (4 * PI / 6));
   //do something after each delivery of new values
   if (vges < 0.01){
-      if(gxnull && gynull){
-          lightid = 1;
-        }
-        else if (gxnull && gynz){
-            lightid = 3;
-          }
-          else if (gxnz && gynull){
-              lightid = 2;
-            }
-            else lightid = 0;
+    if(gxnull && gynull){
+      lightid = 1;
+    } else if (gxnull && gynz){
+      lightid = 3;
+    } else if (gxnz && gynull){
+      lightid = 2;
     }
-    else if ((abs(vzw) > 0.018) && (abs(vzw) > vxyw)){
-        lightid = 5;
-      }
-      else if ((vxyw > 0.022) && (abs(vzw) < vxyw)){
-          lightid = 4;
-        }
-        else lightid = 0;
+    else lightid = 0;
+  } else if ((abs(vzw) > 0.018) && (abs(vzw) > vxyw)){
+    lightid = 5;
+  } else if ((vxyw > 0.022) && (abs(vzw) < vxyw)){
+    lightid = 4;
+  } else lightid = 0;
 
   //buffer IDs and count how many there are
-  if (counter = 30){counter = 0;}
-  memset(counts, 0, sizeof(counts));
+  if (counter >= 30){counter = 0;}
+  //memset(counts, 0, sizeof(counts));
+  int counts[6] = {0 ,0 ,0, 0, 0, 0};
   idhistory[counter] = lightid;
   for (int i = 0; i < 30; i++) {
     int val = idhistory[i];
@@ -119,22 +115,23 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
   for (int i = 0; i <= 5; i++) {Serial.print(i);Serial.print(": ");Serial.print(counts[i]);}Serial.println();
   if (counts[5] > 7){lightidstable = 5;}
-    else if (counts[4] > 9){lightidstable = 4;}
-      else if (counts[3] > 14){lightidstable = 3;}
-        else if (counts[2] > 14){lightidstable = 2;}
-          else if (counts[1] > 14){lightidstable = 1;}
-            else lightidstable = 0;
+  else if (counts[4] > 9){lightidstable = 4;}
+  else if (counts[3] > 14){lightidstable = 3;}
+  else if (counts[2] > 14){lightidstable = 2;}
+  else if (counts[1] > 14){lightidstable = 1;}
+  else lightidstable = 0;
   counter += 1;
 
   //send lightid
   if (command != lightidstable) {
     command = lightidstable;
     commandChanged = true;
-  } {
+  } else {
     commandChanged = false;
   }
-  //Serial.print("ID: "); Serial.println(lightidstable);
-  //client.publish("gruppe2/lightid", String(lightidstable).c_str());
+  Serial.print("ID: "); Serial.println(lightidstable);
+  client.publish("gruppe2/lightid", String(lightid).c_str());
+  client.publish("gruppe2/lightidstable", String(lightidstable).c_str());
 }
 
 void setup() {
