@@ -21,6 +21,7 @@ int lightid;
 int lightidstable;
 bool gxnull, gynull, gxnz, gynz;
 int counter = 0;
+int zaehler = 0;
 int idhistory[30] = {0};
 //int counts[6] = {0};
 long lastUpdate = 0;
@@ -116,9 +117,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
   for (int i = 0; i <= 5; i++) {Serial.print(i);Serial.print(": ");Serial.print(counts[i]);}Serial.println();
   //if (counts[5] > 7){lightidstable = 5;}
   //else if (counts[4] > 9){lightidstable = 4;}
-  if (counts[3] > 2){lightidstable = 3;}
-  else if (counts[2] > 2){lightidstable = 2;}
-  else if (counts[1] > 2){lightidstable = 1;}
+  if (counts[3] > 4){lightidstable = 3;}
+  else if (counts[2] > 4){lightidstable = 2;}
+  else if (counts[1] > 4){lightidstable = 1;}
   else lightidstable = 0;
   counter += 1;
 
@@ -178,9 +179,23 @@ void loop() {
 
   long now = millis();
   // Update at 100hz.
-  if (now - lastUpdate > 10) {
+  if (now - lastUpdate > 2000) {
     lastUpdate = now;
-    if (commandChanged) {
+    zaehler++;
+    int cmd = 0;
+    if (zaehler >= 100) {zaehler = 0;}
+    if (zaehler % 4 == 0) {
+      cmd = 0;
+    } else if(zaehler % 4 == 1) {
+      cmd = 1;
+    } else if(zaehler % 4 == 2) {
+      cmd = 2;
+    } else if(zaehler % 4 == 3) {
+      cmd = 3;
+    }
+    char* effect = buildEffect(cmd);
+    client.publish("gruppe2/api", effect);
+    if (false) {
       // Then send the effect.
       char* effect = buildEffect(command);
       client.publish("gruppe2/api", effect);
