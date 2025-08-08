@@ -18,12 +18,6 @@ Es gibt insgesamt 4 Mikrocontroller.
 ### Links
 
 [WLED json-api](https://kno.wled.ge/interfaces/json-api/#setting-new-values)
-### Meilensteine
-
-- Zuerst die lichter ansprechen
-- Dann mit der IMU Bewegungen erkennen
-- Beides verknüpfen
-- Alles von einem Roboterarm machen lassen
 
 ### JSON
 #### Fragmente
@@ -49,6 +43,3 @@ Notiz: bri brightness, fx id effect, sx speed, ix intensity, col primary color
 | Lage - horizontal  | 1  |
 | Lage - vertikal gerade  | 2  |
 | Lage - vertikal hoch  | 3  |
-| Bewegung - Horizontal  |  4 |
-| Bewegung - vertikal gerade  | 5 |
-| Bewegung - vertikal hoch  | 6 | 
