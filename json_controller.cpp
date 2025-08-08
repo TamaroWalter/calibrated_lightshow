@@ -1,6 +1,7 @@
 #include <ArduinoJson.h>
 #include <vector>
 #include <array>
+#include <string>
 #include "json_controller.h"
 
 
@@ -11,54 +12,45 @@ char* buildEffect(int command) {
   switch (command) {
     case 1: {
       // Case: Lage horizontal. Baue die richtigen bereiche auf.
-      std::vector<std::array<int, 2>> outer = {
-        {39,41}, {55,57}, {71,72}, {88,89}, {102,104}, {120,122}, {134,136}, {152,154}, {167,168}, {184,185}, {199,201},{215, 217}
-      };
-
-      std::vector<std::array<int, 2>> inner = {{72, 88}, {104,120}, {136, 152}, {168, 184}};
-      std::vector<std::array<int, 2>> off = {{0,39}, {41,55}, {57,71}, {89, 102}, {122, 134}, {154,167}, {185,199}, {201, 215}, {217,256}};
-      int outerColor[3] = {255, 255, 0};
-      int innerColor[3] = {0, 0, 255};
-      int offColor[3] = {0,0,0};
+      int textColor[3] = {245, 143, 0};
+      return buildStringJson(1, textColor);
       //return buildStaticJson(255, inner, innerColor, outer, outerColor, off, offColor);
-      return buildDynamicJson(0, 255, (int[3]){0,0,255}, nullptr, nullptr);
+      //return buildDynamicJson(0, 255, (int[3]){0,0,255}, nullptr, nullptr);
     }
     case 2: {
       // Case: Lage vertikal gerade.
-      std::vector<std::array<int, 2>> outer = {
-        {15,17}, {46,50}, {77,78}, {82,83}, {173,174}, {178,179}, {206,210}, {239,241}
-      };
-
-      std::vector<std::array<int, 2>> inner = {{79,81}, {111,113}, {143,145}, {175,177}};
-      std::vector<std::array<int, 2>> off= {{0,15}, {17,46}, {50,77}, {78,79},{81,82}, {83,111}, {113,143}, {145,173},{174,175}, {177,178}, {179,206}, {210,239}, {241,256}};
-      int outerColor[3] = {255, 0, 0};
-      int innerColor[3] = {0, 0, 255};
-      int offColor[3] = {0,0,0};
+      int textColor[3] = {245, 49, 0};
+      return buildStringJson(2, textColor);
       //return buildStaticJson(255, inner, innerColor, outer, outerColor, off, offColor);
-      return buildDynamicJson(0, 255, (int[3]){255,0,0}, nullptr, nullptr);
+      //return buildDynamicJson(0, 255, (int[3]){255,0,0}, nullptr, nullptr);
     }
-    case 3:
+    case 3: {
       // Case: Lage vertikal hoch.
-      return buildDynamicJson(153, 255, (int[3]){0, 255, 0}, nullptr, nullptr);
+      int textColor[3] = {18, 29, 150};
+      return buildStringJson(3, textColor);
+    }
     case 4:
       // Case: Bewegung horizontal.
-      return buildDynamicJson(38, 255, (int[3]){255, 0, 0}, (int[3]){0, 0, 255}, (int[3]){0, 255, 0});
+      return buildDynamicJson(30, 255, 150, (int[3]){255, 111, 0}, (int[3]){21, 5, 166}, (int[3]){0, 255, 0});
     case 5:
       // Case: Bewegung vertikal.
-      return buildDynamicJson(130, 255, (int[3]){252, 235, 3}, (int[3]){0,0,0}, nullptr);
+      return buildDynamicJson(153, 255, 200, (int[3]){252, 235, 3}, (int[3]){0,0,0}, nullptr);
     default:
       // Dunkel ab wenn nichts bekannt ist.
-      return buildDynamicJson(0, 0, (int[3]){255, 0, 0}, nullptr, nullptr);
+      return buildDynamicJson(0, 0, 0, (int[3]){255, 0, 0}, nullptr, nullptr);
   }
 }
 
 char* buildStaticJson(int brightness, const std::vector<std::array<int, 2>>& r1, int* c1, const std::vector<std::array<int, 2>>& r2, int* c2, const std::vector<std::array<int, 2>>& r3, int* c3) {
   static char jsonBuffer[1024];
   StaticJsonDocument<1024> doc;
+
   doc["bri"] = brightness;
   JsonArray seg = doc.createNestedArray("seg");
   JsonObject segment = seg.createNestedObject();
   segment["sx"] = 126;
+  segment["id"] = 0;
+  segment["freeze"] = false;
   JsonArray i = segment.createNestedArray("i");
   // Add r1 ranges with c1 colors
   for (const auto& range : r1) {
@@ -90,20 +82,72 @@ char* buildStaticJson(int brightness, const std::vector<std::array<int, 2>>& r1,
   return jsonBuffer;
 }
 
+char* buildStringJson(int stringId, int* textColor) {
+  static char jsonBuffer[1024];
+  StaticJsonDocument<1024> doc;
+  doc["on"] = true;
+  JsonArray seg = doc.createNestedArray("seg");
+  JsonObject segment = seg.createNestedObject();
+  segment["bri"] = 255;
+  segment["set"] = 0;
+  const char* text = ""; // pointer to a string literal
+
+  switch (stringId) {
+      case 1:
+          text = "-- -- -- -- -- -- -- -- -- --";
+          break;
+      case 2:
+          text = "+ + + + + + + + + +";
+          break;
+      case 3:
+          text = "I I I I I I I I I I ";
+          break;
+      default:
+          text = ".. .. .. .. .. .. ..";
+          break;
+  }
+  segment["n"] = text;
+  JsonArray color = segment.createNestedArray("col");
+  JsonArray c1 = color.createNestedArray();
+  c1.add(textColor[0]);
+  c1.add(textColor[1]);
+  c1.add(textColor[2]);
+  JsonArray c2 = color.createNestedArray();
+  c2.add(0);
+  c2.add(0);
+  c2.add(0);
+  JsonArray c3 = color.createNestedArray();
+  c3.add(0);
+  c3.add(0);
+  c3.add(0);
+  segment["fx"] = 122;
+  segment["sx"] = 255;
+  segment["ix"] = 127;
+  segment["pal"] = 2;
+  segment["c1"] = 0;
+  segment["c2"] = 127;
+  segment["c3"] = 16;
+  serializeJson(doc, jsonBuffer, sizeof(jsonBuffer));
+  return jsonBuffer;
+}
+
 /**
  * Function to build the Json that controls the lights from the led-matrix.
  * - primary color is required, other colors are optional.
  * 
  */
-char* buildDynamicJson(int effectid, int brightness, int* c1, int* c2, int* c3) {
+char* buildDynamicJson(int effectid, int brightness, int speed, int* c1, int* c2, int* c3) {
   static char jsonBuffer[256];
   StaticJsonDocument<256> doc;
-
+  doc["on"] = true;
   doc["bri"] = brightness;
   JsonArray seg = doc.createNestedArray("seg");
   JsonObject segment = seg.createNestedObject();
-  segment["on"] = true;
+  //segment.createNestedArray("i");
+  segment["id"] = 0;
+  segment["freeze"] = false;
   segment["fx"] = effectid;
+  segment["sx"] = speed;
   JsonArray col = segment.createNestedArray("col");
 
   JsonArray color1 = col.createNestedArray();
@@ -123,6 +167,14 @@ char* buildDynamicJson(int effectid, int brightness, int* c1, int* c2, int* c3) 
       color3.add(c3[i]);
     }
   }
+  serializeJson(doc, jsonBuffer, sizeof(jsonBuffer));
+  return jsonBuffer;
+}
+
+char* buildResetJson() {
+  static char jsonBuffer[256];
+  StaticJsonDocument<256> doc;
+  doc["on"] = true;
   serializeJson(doc, jsonBuffer, sizeof(jsonBuffer));
   return jsonBuffer;
 }

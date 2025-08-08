@@ -94,6 +94,11 @@ void loop() {
     lastUpdate = now;
     if (commandChanged) {
       // First, reset the segment completely
+      char* reset = buildResetJson();
+      client.publish("gruppe2/api", reset);
+      //delay(50);
+
+      // Then send the effect.
       char* effect = buildEffect(command);
       // Add these debug lines:
       Serial.println();
