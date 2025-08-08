@@ -37,7 +37,8 @@ char* buildEffect(int command) {
       return buildDynamicJson(153, 255, 200, (int[3]){252, 235, 3}, (int[3]){0,0,0}, nullptr);
     default:
       // Dunkel ab wenn nichts bekannt ist.
-      return buildDynamicJson(0, 0, 0, (int[3]){0, 0, 0}, nullptr, nullptr);
+      return buildDynamicJson(130, 255, 200, (int[3]){252, 235, 3}, (int[3]){0,0,0}, nullptr);
+      //return buildDynamicJson(0, 0, 0, (int[3]){0, 0, 0}, nullptr, nullptr);
   }
 }
 
