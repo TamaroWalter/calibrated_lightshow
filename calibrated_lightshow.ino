@@ -2,7 +2,8 @@
 #include <WiFi.h>   //Bibliothek --> Kommunikation auf unteren Leveln
 #include <PubSubClient.h> //MQTT Protokoll
 #include <ArduinoJson.h>
-
+#define MQTT_MAX_PACKET_SIZE 4096
+#include "json_controller.h"
 
 //WIFI einstellen
 const char* ssid = "ploen_iot";   
@@ -16,35 +17,35 @@ float axw, ayw, azw;
 float gx, gy, gz;
 float gxrad, gyrad, gzrad;
 float vxw, vyw, vzw, vxyw, vges;
-int lightid; int lightidstable;
+int lightid;
+int lightidstable;
 bool gxnull, gynull, gxnz, gynz;
 int counter = 0;
 int idhistory[30] = {0};
 int counts[6] = {0};
+long lastUpdate = 0;
+bool commandChanged = false;
+int command = -1;
+bool brightnessChanged = false;
+int brightness = -1;
+const int ledPin = 2;
 
 void setup_wifi() {
-
   delay(10);
-  // We start by connecting to a WiFi network
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-
   WiFi.begin(ssid, password);
-
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-
   randomSeed(micros());
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
 }
 
+/**
+ * This function can read the content of a subcribed topic and then do something with it.
+ * @param topic - the topic that was subscribed to
+ * @param payload array - The content that was send (e.g. the json that was published to topic/api)
+ * @param length - the length of the callback
+ */
 void callback(char* topic, byte* payload, unsigned int length) {
   // Copy payload into a string and add null terminator
   char jsonStr[length + 1];
@@ -126,9 +127,23 @@ void callback(char* topic, byte* payload, unsigned int length) {
   counter += 1;
 
   //send lightid
-  Serial.print("ID: "); Serial.println(lightidstable);
-  client.publish("gruppe2/lightid", String(lightidstable).c_str());
+  if (command != lightidstable) {
+    command = lightidstable;
+    commandChanged = true;
+  } {
+    commandChanged = false;
+  }
+  //Serial.print("ID: "); Serial.println(lightidstable);
+  //client.publish("gruppe2/lightid", String(lightidstable).c_str());
+}
 
+void setup() {
+  pinMode(ledPin, OUTPUT);     // Initialize the ledPin pin as an output
+  digitalWrite(ledPin, HIGH);
+  Serial.begin(115200);
+  setup_wifi();
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
 }
 
 
@@ -158,17 +173,30 @@ void reconnect() {
 }
 
 //setup und loop sind oft getrennt (also setup ist Initialisierung, loop laeuft dann unendlich durch)
-void setup() {
-  Serial.begin(115200);
-  setup_wifi();
-  client.setServer(mqtt_server, 1883);
-  client.setCallback(callback);
-}
-
 void loop() {
-
   if (!client.connected()) {
     reconnect();
   }
-  client.loop();  //aktiviert Callback, wenn Nachricht reinkommt
+  client.loop();
+
+  long now = millis();
+  // Update at 100hz.
+  if (now - lastUpdate > 100) {
+    lastUpdate = now;
+    if (commandChanged) {
+      // Then send the effect.
+      char* effect = buildEffect(command);
+      client.publish("gruppe2/api", effect);
+      commandChanged = false;
+
+      // Add these debug lines:
+      Serial.println();
+      Serial.print("Command: ");
+      Serial.println(command);
+      Serial.print("JSON length: ");
+      Serial.println(strlen(effect));
+      Serial.print("JSON content: ");
+      Serial.println(effect);
+    }
+  }
 }

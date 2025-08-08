@@ -2,6 +2,7 @@
 
 ### Ziele
 
+Übersetzung von Bewegung in Licht.
 Bewegungen mithilfe einer IMU erkennen und mit Licht zu visualisieren
 
 ### Aufbau
@@ -25,10 +26,9 @@ Es gibt insgesamt 4 Mikrocontroller.
 - Alles von einem Roboterarm machen lassen
 
 ### JSON
-## Fragmente
+#### Fragmente
 ```
 {
-  "on": true,
   "bri": 128,
   "seg": [
     {
@@ -41,3 +41,14 @@ Es gibt insgesamt 4 Mikrocontroller.
 }
 ```
 Notiz: bri brightness, fx id effect, sx speed, ix intensity, col primary color
+
+#### Kommandos für licht
+
+| Bewegung   | Kommando-ID | 
+| ------------- | ------------- |
+| Lage - horizontal  | 1  |
+| Lage - vertikal gerade  | 2  |
+| Lage - vertikal hoch  | 3  |
+| Bewegung - Horizontal  |  4 |
+| Bewegung - vertikal gerade  | 5 |
+| Bewegung - vertikal hoch  | 6 | 
