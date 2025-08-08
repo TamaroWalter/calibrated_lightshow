@@ -178,7 +178,7 @@ void loop() {
 
   long now = millis();
   // Update at 100hz.
-  if (now - lastUpdate > 100) {
+  if (now - lastUpdate > 60) {
     lastUpdate = now;
     if (commandChanged) {
       // Then send the effect.

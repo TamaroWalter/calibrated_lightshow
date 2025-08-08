@@ -97,10 +97,10 @@ char* buildStringJson(int stringId, int* textColor) {
           text = "-- -- -- -- -- -- -- -- -- --";
           break;
       case 2:
-          text = "+ + + + + + + + + +";
+          text = "| | | | | | | | | |";
           break;
       case 3:
-          text = "I I I I I I I I I I ";
+          text = "+ + + + + + + + + +";
           break;
       default:
           text = ".. .. .. .. .. .. ..";
